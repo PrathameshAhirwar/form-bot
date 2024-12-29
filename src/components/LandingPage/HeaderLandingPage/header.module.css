@@ -1,0 +1,60 @@
+.container{
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    padding: 2%;
+}
+
+.logo{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    /* border: 1px solid white; */
+    width: 12%;
+}
+
+.nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 18%;
+}
+
+.navList{
+    display: flex;
+    list-style: none;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 5%;
+}
+
+.signIn{
+    border: 1px solid rgb(85, 164, 238);
+    padding: 3%;
+    border-radius: 5px;
+    width: 30%;
+    text-align: center;
+    color: rgb(85, 164, 238);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.signIn:hover{
+    background-color: rgb(34, 133, 226);
+    color: white;
+}
+
+.createForm{
+    padding: 3%;
+    background-color: rgb(0, 86, 214);
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+}
+
+.createForm:hover{
+    background-color: rgb(34, 133, 226);
+}
+

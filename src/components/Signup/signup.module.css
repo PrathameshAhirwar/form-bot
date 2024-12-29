@@ -1,0 +1,132 @@
+.container{
+    height: 100vh;
+    background-color: #444444;
+    display: flex;
+    justify-content: center;
+}
+
+/* .form{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: self-start;
+    width: 80%;
+    color: white;
+    margin-left: 15%;
+} */
+
+.login{
+    display: flex;
+    height: 40%;
+    width: 30%;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 5%;
+}
+
+.email{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: self-start;
+    width: 80%;
+    color: white;
+    margin-left: 15%;
+}
+
+.email label{
+    font-size: 20px;
+    margin: 3%;
+    color: white;
+    font-weight: bold;
+}
+.email input{
+    width: 80%;
+    height: 30px;
+    border: 1px solid white;
+    border-radius: 10px;
+    background-color: transparent;
+    color: white;
+    font-size: 15px;
+    text-align: start;
+    padding: 5%;
+    margin: 2%;
+}
+
+.email .btn{
+    width: 80%;
+    height: 30px;
+    border: 1px solid white;
+    border-radius: 10px;
+    background-color: #1A5FFF;
+    color: white;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5%;
+    margin: 4.5% 2%;
+    cursor: pointer;
+}
+
+.email h6{
+    color: white;
+    font-size: 15px;
+    margin: 0.5% 40%;
+}
+
+.email .btnG{
+    width: 80%;
+    height: 30px;
+    border: 1px solid white;
+    border-radius: 10px;
+    background-color: #1A5FFF;
+    color: white;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-evenly ;
+    align-items: center;
+    padding: 5%;
+    margin: 3% 2%;
+    cursor: pointer;
+}
+
+.btnG img{
+    background-color: white;
+    border-radius: 60%;
+    padding: 1%;
+    margin: 1%;
+}
+
+.email p{
+    color: white;
+    font-size: 13px;
+    margin: 5% 15%;
+}
+
+
+.leftDesign{
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    top: 30%;
+}
+
+.bottomDesign{
+    position: absolute;
+    bottom: 0;
+    top: 84.2%;
+    right: 26%;
+}
+
+.rightDesign{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    top: 12%;
+}
+
+.a{
+    color: #1A5FFF;
+}

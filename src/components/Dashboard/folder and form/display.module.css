@@ -1,0 +1,11 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    margin: 100px;
+}
+
+.folderContainer{
+    display: flex;
+    margin: 15px;
+    justify-content: flex-start;
+}
