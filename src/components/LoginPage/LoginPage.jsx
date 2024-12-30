@@ -15,7 +15,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     const token = document.cookie
-        .split('; ')
+        .split(';')
         .find((row) => row.startsWith('token='))
         ?.split('=')[1];
     const userId = document.cookie

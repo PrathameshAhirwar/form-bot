@@ -1,0 +1,80 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background: #1e1e2f;
+    padding: 20px;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .modalContent h3 {
+    color: #ffffff;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+  }
+  
+  .modalInput {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 2px solid #ff007a;
+    border-radius: 8px;
+    background-color: #1e1e2f;
+    color: #ffffff;
+    outline: none;
+    margin-bottom: 20px;
+  }
+  
+  .modalInput::placeholder {
+    color: #6e6e8a;
+  }
+  
+  .modalActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .doneButton {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .doneButton:disabled {
+    background-color: #6e6e8a;
+    cursor: not-allowed;
+  }
+  
+  .cancelButton {
+    background: none;
+    color: #ffffff;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .divider {
+    width: 1px;
+    height: 20px;
+    background-color: #6e6e8a;
+  }
+  

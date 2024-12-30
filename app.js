@@ -6,6 +6,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router'
 import Signup from './src/components/Signup/Signup';
 import 'react-toastify/dist/ReactToastify.css';
 import Dashboard from './src/components/Dashboard/Dashboard';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import Flow from './src/components/FormFlow/Flow';
+
 
 
 
@@ -31,6 +34,10 @@ const appRouter = createBrowserRouter([
             {
                 path:"/dashboard/:userId",
                 element:<Dashboard />
+            },
+            {
+                path: "/dashboard/:userId/form/:formId/flow", // Add this new route
+                element: <Flow />
             }
         ]
     },

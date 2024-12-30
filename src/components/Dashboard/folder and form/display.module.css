@@ -1,11 +1,96 @@
 .container{
     display: flex;
     flex-direction: column;
-    margin: 100px;
+    margin: 50px;
 }
-
+/* Folder stuff */
 .folderContainer{
     display: flex;
     margin: 15px;
     justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.folderBtn{
+    padding: 15px;
+    cursor: pointer;
+    background-color: #FFFFFF14;
+    border-radius: 15px;
+    color: inherit;
+    margin: 10px;
+}
+
+.folder{
+    padding: 15px;
+    margin: 10px;
+    cursor: pointer;
+    background-color: #FFFFFF14;
+    border-radius: 15px;
+    color: inherit;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.folder:hover {
+    background-color: #f0f0f0;
+}
+
+.activeFolder {
+    background-color: #d0d0d0;
+    font-weight: bold;
+}
+
+/* Form stuff */
+.formContainer{
+    display: flex;
+    margin: 15px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.formBtn{
+    height: 200px;
+    width: 200px;
+    padding: 15px;
+    margin: 25px;
+    cursor: pointer;
+    background-color: #1A5FFF;
+    border-radius: 15px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    align-content: space-evenly;
+}
+
+.form{
+    height: 200px;
+    width: 200px;
+    padding: 15px;
+    margin: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: #1A5FFF;
+    border-radius: 15px;
+    color: white;
+    position: relative;
+}
+
+
+.trash {
+    color: red;
+    position: absolute;
+    top: -8px;
+    right: -2px;
+    cursor: pointer;
+}
+
+.trashFolder{
+    color: red;
+    cursor: pointer;
+    margin-left: 10px;
 }
