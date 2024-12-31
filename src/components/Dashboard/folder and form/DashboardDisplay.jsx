@@ -1,13 +1,16 @@
 import style from './display.module.css';
 import { Trash } from 'lucide-react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router'; // Add useParams import
 
 const DashboardDisplay = ({ form, folder, openFolderModal, openFormModal, onFolderClick, activeFolder, openDeleteModal }) => {
   const navigate = useNavigate();
   const { userId } = useParams(); // Get userId from URL parameters
-
-  // Remove the handleFormClick function since we're using inline navigation
   
+  // Remove the handleFormClick function since we're using inline navigation
+  useEffect(()=>{
+    console.log("dashoard display callled")
+  },[])
   return (
     <>
       <div className={style.container}>
@@ -46,7 +49,9 @@ const DashboardDisplay = ({ form, folder, openFolderModal, openFormModal, onFold
               <div 
                 className={style.form} 
                 key={index} 
-                onClick={() => navigate(`/dashboard/${userId}/form/${form._id}/flow`)}
+                onClick={() => {
+                  console.log('Navigating to:', `/dashboard/${userId}/form/${form._id}/flow`);
+                  navigate(`/dashboard/${userId}/form/${form._id}/flow`)}}
               >
                 <h4>{form.name}</h4>
                 <Trash 

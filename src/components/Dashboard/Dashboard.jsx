@@ -33,7 +33,9 @@ const Dashboard = () => {
   // Function to toggle between light and dark mode
   const toggleLightMode = () => setLight((prevLight) => !prevLight);
 
-
+  useEffect(() => {
+    console.log("Dashboard component rendered");
+  }, []);
   // Creating a folder
   const createFolder = async (folderName) => {
     try {
@@ -63,7 +65,6 @@ const Dashboard = () => {
   // Creating a form
   const createForm = async (formName) => {
     try {
-
       const url = activeFolder
       ? `http://localhost:3000/${userId}/folder/${activeFolder}/createForm` // API for creating a form inside a folder
       : `http://localhost:3000/${userId}/createForm`; // API for creating a form in the root
@@ -125,6 +126,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchUserName = async () => {
       try {
+        console.log(userId)
         const response = await fetch(`http://localhost:3000/dashboard/${userId}`, {
           method: 'GET',
           headers: {

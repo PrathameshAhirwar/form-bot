@@ -28,7 +28,7 @@ const Modal = ({ title, onClose, onSave, deleteAction, inputPlaceholder }) => {
           {/* If it's a delete action, show confirm/cancel buttons */}
           {deleteAction ? (
             <>
-              <p>Are you sure you want to delete this {title.toLowerCase()}?</p>
+              {/* <p>Are you sure you want to delete this {title.toLowerCase()}?</p> */}
               <button onClick={onSave} className={style.doneButton}>
                 Confirm
               </button>
