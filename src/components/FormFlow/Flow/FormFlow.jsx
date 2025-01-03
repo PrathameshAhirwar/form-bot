@@ -2,20 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import style from './FormFlow.module.css';
 
-const FormFlow = ({ light }) => {
+const FormFlow = ({ light, onFlowChange }) => {
   const { userId, formId } = useParams();
-  const [flow, setFlow] = useState({ steps: [] });
+  const [localFlow, setLocalFlow] = useState({ steps: [] });
   const [selectedStep, setSelectedStep] = useState(null);
-  const [inputValues, setInputValues] = useState({}); // Track form inputs per step
+  const [localInputValues, setLocalInputValues] = useState({});
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const getToken = () => {
-    const token = document.cookie
-      .split(';')
-      .find((row) => row.startsWith('token='))?.split('=')[1];
-    return token;
-  };
+  // Define which types should have input fields (only bubble items)
+  const BUBBLE_TYPES = ['text', 'image', 'video', 'gif'];
 
-  // Fetch flow data
+  // Fetch initial flow data
   useEffect(() => {
     const fetchFlow = async () => {
       try {
@@ -24,7 +21,26 @@ const FormFlow = ({ light }) => {
         });
         if (response.ok) {
           const data = await response.json();
-          setFlow(data); // Set flow with steps data
+          console.log('Fetched flow data:', data); // Debug log
+          
+          setLocalFlow(data);
+          
+          // Initialize input values from steps
+          const savedValues = {};
+          data.steps.forEach(step => {
+            if (BUBBLE_TYPES.includes(step.type) && step.value !== undefined) {
+              savedValues[step._id] = step.value;
+            }
+          });
+          
+          console.log('Initialized input values:', savedValues); // Debug log
+          setLocalInputValues(savedValues);
+          
+          // Notify parent of initial state
+          onFlowChange({
+            flow: data,
+            inputValues: savedValues
+          });
         }
       } catch (error) {
         console.error('Error fetching flow:', error);
@@ -33,116 +49,78 @@ const FormFlow = ({ light }) => {
     fetchFlow();
   }, [userId, formId]);
 
-  // Handle adding a step when a bubble is clicked
-  const handleBubbleClick = async (type) => {
-    try {
-      const isEndStep = type === 'button';
-      const newType = isEndStep || ['text', 'image', 'video', 'gif', 'textInput', 'number', 'email', 'phone', 'date', 'rating'].includes(type) ? type : '';
+  const handleBubbleClick = (type) => {
+    const isEndStep = type === 'button';
+    const newType = isEndStep || [...BUBBLE_TYPES, 'textInput', 'number', 'email', 'phone', 'date', 'rating'].includes(type) ? type : '';
 
-      const response = await fetch(`http://localhost:3000/${userId}/form/${formId}/flow/step`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          type: newType,
-          label: isEndStep ? 'Submit' : `New ${newType}`,
-          properties: {},
-          ...(isEndStep && { endStep: true }),
-        }),
-      });
+    const newStep = {
+      _id: `temp_${Date.now()}`,
+      type: newType,
+      label: isEndStep ? 'Submit' : `New ${newType}`,
+      properties: {},
+      value: '', // Initialize value for new step
+      ...(isEndStep && { endStep: true }),
+    };
 
-      if (response.ok) {
-        const updatedFlow = await response.json();
-        setFlow(updatedFlow); // Update flow state with new step
-      }
-    } catch (error) {
-      console.error('Error creating step:', error);
-    }
+    const updatedFlow = {
+      ...localFlow,
+      steps: [...localFlow.steps, newStep],
+    };
+    
+    setLocalFlow(updatedFlow);
+    onFlowChange({
+      flow: updatedFlow,
+      inputValues: localInputValues
+    });
   };
 
-  // Handle input value change for a dynamic form step (like text input)
-  const handleInputChange = async (stepId, event) => {
+  const handleInputChange = (stepId, event) => {
     const newValue = event.target.value;
-    setInputValues((prevValues) => ({
-      ...prevValues,
+    
+    // Update both local input values and the step value in the flow
+    const updatedInputValues = {
+      ...localInputValues,
       [stepId]: newValue,
-    }));
-
-    const yourToken = getToken()
-    if (!yourToken) {
-      console.error('Token not found');
-      return;
-    }
-    // Update the flow step in the backend with the new value
-    try {
-      const response = await fetch(`http://localhost:3000/${userId}/form/${formId}/flow/step/${stepId}/next`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${yourToken}`
-        },
-        credentials: 'include',
-        body: JSON.stringify({ nextSteps: [newValue] }), // Send updated value
-      });
-
-      if (response.ok) {
-        const updatedFlow = await response.json();
-        setFlow(updatedFlow); // Update flow with the modified step
-      }
-    } catch (error) {
-      console.error('Error updating step:', error);
-    }
+    };
+    
+    const updatedFlow = {
+      ...localFlow,
+      steps: localFlow.steps.map(step => 
+        step._id === stepId ? { ...step, value: newValue } : step
+      )
+    };
+    
+    setLocalInputValues(updatedInputValues);
+    setLocalFlow(updatedFlow);
+    
+    onFlowChange({
+      flow: updatedFlow,
+      inputValues: updatedInputValues
+    });
   };
 
-  // Handle step click to select and view step details
-  const handleStepClick = (step) => {
-    setSelectedStep(step);
+  const handleDeleteStep = (stepId) => {
+    const updatedSteps = localFlow.steps.filter(step => step._id !== stepId);
+    const updatedFlow = { ...localFlow, steps: updatedSteps };
+    
+    const { [stepId]: deletedValue, ...remainingValues } = localInputValues;
+    setLocalInputValues(remainingValues);
+    setLocalFlow(updatedFlow);
+    
+    if (selectedStep?._id === stepId) {
+      setSelectedStep(null);
+    }
+    
+    onFlowChange({
+      flow: updatedFlow,
+      inputValues: remainingValues
+    });
   };
 
-  // Handle deleting a step
-  const handleDeleteStep = async (stepId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/${userId}/form/${formId}/flow/step/${stepId}`,
-        {
-          method: 'DELETE',
-          credentials: 'include',
-        }
-      );
-
-      if (response.ok) {
-        const updatedFlow = await response.json();
-        setFlow(updatedFlow); // Update flow with new steps array
-        if (selectedStep?._id === stepId) {
-          setSelectedStep(null);
-        }
-      }
-    } catch (error) {
-      console.error('Error deleting step:', error);
-    }
-  };
-
-  // Handle form submission (optional)
-  const handleSubmit = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/${userId}/form/${formId}/flow/submit`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ steps: flow.steps, inputValues }), // Send all input values and steps
-      });
-
-      if (response.ok) {
-        console.log('Form submitted successfully!');
-        // Handle successful submission (redirect, show success message, etc.)
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-    }
+  const handleSubmitForm = () => {
+    // Here you can process the form submission logic (e.g., sending the form data to the backend)
+    console.log('Form submitted with the following data:', localInputValues);
+    setFormSubmitted(true);
   };
 
   return (
@@ -192,91 +170,55 @@ const FormFlow = ({ light }) => {
 
       <div className={style.canvas}>
         <h1>Start</h1>
-        {flow.steps.map((step) => (
+        {localFlow.steps.map((step) => (
           <div
             key={step._id}
             className={`${style.step} ${selectedStep?._id === step._id ? style.selected : ''}`}
-            onClick={() => handleStepClick(step)}
+            onClick={() => setSelectedStep(step)}
           >
             <div className={style.stepHeader}>
               <h2>{step.label}</h2>
-              <button className={style.deleteBtn} onClick={() => handleDeleteStep(step._id)}>
+              <button
+                className={style.deleteBtn}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteStep(step._id);
+                }}
+              >
                 ×
               </button>
             </div>
-
-            {/* Render the content based on the type of the step */}
-            {step.type === 'text' && (
-                <input
-                  type="text"
-                  className={style.input}
-                  value={inputValues[step._id] || ''}
-                  onChange={(e) => handleInputChange(step._id, e)}
-                  placeholder="Enter text"
-                />
-            )}
-
-            {step.type === 'textInput' && (
+            
+            {/* Render input field only for bubble types */}
+            {BUBBLE_TYPES.includes(step.type) && (
               <input
                 type="text"
                 className={style.input}
-                placeholder={step.placeholder || 'Enter text'}
-                value={inputValues[step._id] || ''}
+                value={step.value || ''}  // Use step.value directly
                 onChange={(e) => handleInputChange(step._id, e)}
-                required
+                placeholder={`Enter ${step.type}`}
               />
             )}
-
-            {step.type === 'number' && (
-              <input
-                type="number"
-                className={style.input}
-                value={inputValues[step._id] || ''}
-                onChange={(e) => handleInputChange(step._id, e)}
-                required
-              />
+            
+            {/* Display-only elements for input types */}
+            {!BUBBLE_TYPES.includes(step.type) && step.type !== 'button' && (
+              <div className={style.inputDisplay}>{step.type} Input Field</div>
             )}
-            {step.type === 'email' && (
-              <input
-                type="email"
-                className={style.input}
-                value={inputValues[step._id] || ''}
-                onChange={(e) => handleInputChange(step._id, e)}
-                required
-              />
-            )}
-            {step.type === 'phone' && (
-              <input
-                type="tel"
-                className={style.input}
-                value={inputValues[step._id] || ''}
-                onChange={(e) => handleInputChange(step._id, e)}
-                required
-              />
-            )}
-            {step.type === 'date' && (
-              <input
-                type="date"
-                className={style.input}
-                value={inputValues[step._id] || ''}
-                onChange={(e) => handleInputChange(step._id, e)}
-                required
-              />
-            )}
-
+            
+            {/* Button for button type */}
             {step.type === 'button' && (
               <button
-                type="submit"
-                className={`${style.submitButton} ${
-                  flow.endSteps?.includes(step._id) ? style.endStep : ''
-                }`}
-                onClick={handleSubmit}
+                type="button"
+                className={`${style.submitButton} ${step.endStep ? style.endStep : ''}`}
+                onClick={step.endStep ? handleSubmitForm : undefined}  // Submit form if it's an end step
               >
                 {step.label || 'Submit'}
               </button>
             )}
           </div>
         ))}
+
+        {formSubmitted && <div className={style.submitMessage}>Form submitted successfully!</div>}
       </div>
     </div>
   );

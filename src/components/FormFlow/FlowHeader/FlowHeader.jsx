@@ -1,28 +1,53 @@
 import React from 'react';
 import style from './FlowHeader.module.css';
 import { XIcon } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router';
 
-const FlowHeader = ({ toggleLightMode, light, formName, setFormName, handleSaveForm, onCancel }) => {
+const FlowHeader = ({
+  toggleLightMode, 
+  light, 
+  formName, 
+  setFormName, 
+  handleSaveForm, 
+  onCancel, 
+  handleTabSwitch, 
+  activeTab
+}) => {
+  const { formId } = useParams();
+  const navigate = useNavigate();
+
+  const handleShare = () => {
+    const shareableLink = `${window.location.origin}/form/${formId}/chat`;
+    navigator.clipboard.writeText(shareableLink).then(() => {
+      alert('Shareable link copied to clipboard!');
+    });
+  };
+
   return (
     <div className={`${style.container} ${light ? style.light : style.dark}`}>
-      
       {/* Form name input */}
       <div className={style.nameInput}>
-        <input 
-          type="text" 
-          placeholder="Enter form name" 
+        <input
+          type="text"
+          placeholder="Enter form name"
           className={style.inputText}
           value={formName}
-          onChange={(e) => setFormName(e.target.value)} 
+          onChange={(e) => setFormName(e.target.value)}
         />
       </div>
 
-      {/* Flow/Response Button */}
+      {/* Flow/Response Tabs */}
       <div className={style.btnSwitch}>
-        <div className={style.flow}>
+        <div
+          className={`${style.flow} ${activeTab === 'flow' ? style.activeTab : ''}`}
+          onClick={() => handleTabSwitch('flow')}
+        >
           <p>Flow</p>
         </div>
-        <div className={style.response}>
+        <div
+          className={`${style.response} ${activeTab === 'response' ? style.activeTab : ''}`}
+          onClick={() => handleTabSwitch('response')}
+        >
           <p>Response</p>
         </div>
       </div>
@@ -37,7 +62,7 @@ const FlowHeader = ({ toggleLightMode, light, formName, setFormName, handleSaveF
           </label>
           <h3>Dark</h3>
         </div>
-        <div className={`${style.shareBtn} ${light ? style.light : ''}`}>
+        <div className={`${style.shareBtn} ${light ? style.light : ''}`} onClick={handleShare}>
           <p>Share</p>
         </div>
         <div className={style.saveBtn} onClick={handleSaveForm}>

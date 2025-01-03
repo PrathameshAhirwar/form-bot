@@ -1,19 +1,27 @@
-import React from 'react';
-import style from './dashboardHeader.module.css';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import style from './dashboardHeader.module.css';
 
-const DashboardHeader = ({ toggleLightMode, light, name }) => {
+const DashboardHeader = ({
+  toggleLightMode,
+  light,
+  name,
+  onShare,
+  sharedWorkspaces = [],
+  onWorkspaceChange,
+  activeWorkspace 
+}) => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       const response = await fetch('http://localhost:3000/logout', {
         method: 'POST',
-        credentials: 'include', // Send cookies with the request
+        credentials: 'include',
       });
 
       if (response.ok) {
-        navigate('/login'); // Redirect to login page on successful logout
+        navigate('/login');
       } else {
         const errorData = await response.json();
         alert(errorData.message || 'Failed to log out');
@@ -24,30 +32,38 @@ const DashboardHeader = ({ toggleLightMode, light, name }) => {
     }
   };
 
+  const handleWorkspaceSwitch = (workspaceId) => {
+    if (workspaceId === 'logout') {
+      handleLogout();
+      return;
+    }
+    
+    if (workspaceId) {
+      onWorkspaceChange(workspaceId);
+    }
+  };
+
   return (
     <div className={`${style.container} ${light ? style.light : style.dark}`}>
       <div className={style.dropdownContainer}>
         <select
-          name=""
-          id=""
           className={style.dropdown}
-          onChange={(e) => {
-            if (e.target.value === 'logout') {
-              handleLogout(); // Trigger logout on selection
-            }
-          }}
+          onChange={(e) => handleWorkspaceSwitch(e.target.value)}
+          value={activeWorkspace || ''}
         >
-          <option value="" className={style.option}>
-            {`${name}'s Workspace`}
-          </option>
-          <option value="settings" className={style.setting}>
-            Settings
-          </option>
-          <option value="logout" className={style.logout}>
-            Logout
-          </option>
+          <option value="">{name}'s Workspace</option>
+          {Array.isArray(sharedWorkspaces) && sharedWorkspaces.map((workspace) => (
+            <option 
+              key={workspace.ownerId} 
+              value={workspace.ownerId}
+            >
+              {workspace.ownerName}'s Workspace ({workspace.accessType})
+            </option>
+          ))}
+          <option value="logout">Logout</option>
         </select>
       </div>
+
       <div className={style.btnContainer}>
         <div className={style.toggle}>
           <h3>Light</h3>
@@ -57,7 +73,7 @@ const DashboardHeader = ({ toggleLightMode, light, name }) => {
           </label>
           <h3>Dark</h3>
         </div>
-        <div className={style.btn}>
+        <div className={style.btn} onClick={onShare}>
           <p>Share</p>
         </div>
       </div>

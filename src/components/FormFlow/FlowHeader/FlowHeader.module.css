@@ -24,6 +24,22 @@
   padding: 5px;
 }
 
+.flow, .response {
+  margin-right: 5px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 5px;
+  width: 80px;
+  text-align: center;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.activeTab {
+  border: 1px solid #007bff; /* Highlight active tab */
+}
+
+
 .toggle {
   display: flex;
   align-items: center;
@@ -134,7 +150,7 @@ input:checked + .slider:before {
 .flow{
   margin-right: 5px;
   cursor: pointer;
-  border: 1px solid #007bff;
+  /* border: 1px solid #007bff; */
   border-radius: 5px;
   padding: 5px;
   width: 80px;

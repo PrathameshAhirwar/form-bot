@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+// Dashboard.jsx
+import React, { useState, useEffect } from 'react';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
 import style from './Dashboard.module.css';
 import { useParams, useNavigate } from 'react-router';
@@ -6,231 +7,167 @@ import DashboardDisplay from './folder and form/DashboardDisplay';
 import Modal from './Modal/Modal';
 
 const Dashboard = () => {
-  // Extracting userId
   const { userId } = useParams();
   const navigate = useNavigate();
 
-  // Setting the light and dark mode
   const [light, setLight] = useState(true);
-  // Setting user
   const [userName, setUserName] = useState(null);
-  // Fetching the folder
   const [folder, setFolder] = useState([]);
-  // Fetching the form
   const [form, setForm] = useState([]);
-  // Setting the modal state
-  const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
-  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-  const [activeFolder, setActiveFolder] = useState(null);
-  // Deleting the folder or form
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteItemType, setDeleteItemType] = useState(null);  // 'folder' or 'form'
-  const [deleteItemId, setDeleteItemId] = useState(null);  // ID of item to delete
+  const [sharedWorkspaces, setSharedWorkspaces] = useState([]);
+  const [activeWorkspace, setActiveWorkspace] = useState(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [currentAccessType, setCurrentAccessType] = useState('owner');
 
-
-
-
-  // Function to toggle between light and dark mode
-  const toggleLightMode = () => setLight((prevLight) => !prevLight);
-
-  useEffect(() => {
-    console.log("Dashboard component rendered");
-  }, []);
-  // Creating a folder
-  const createFolder = async (folderName) => {
+  // Fetch shared workspaces
+  const fetchSharedWorkspaces = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/${userId}/createFolder`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await fetch('http://localhost:3000/workspace/shared', {
         credentials: 'include',
-        body: JSON.stringify({ name: folderName }),
       });
-
+      
       if (response.ok) {
-        const newFolder = await response.json();
-        setFolder([...folder, newFolder]); // Update the folder state
-        setIsFolderModalOpen(false); // Close the modal
-      } else {
-        const errorData = await response.json();
-        alert(errorData.message || 'Failed to create folder');
+        const data = await response.json();
+        console.log('Shared workspaces:', data); // Debug log
+        setSharedWorkspaces(data);
       }
     } catch (error) {
-      console.error('Error creating folder:', error);
-      alert('An error occurred while creating the folder');
+      console.error('Error fetching shared workspaces:', error);
     }
   };
 
-  // Creating a form
-  const createForm = async (formName) => {
+  // Fetch user's own workspace data
+  const fetchUserWorkspace = async () => {
     try {
-      const url = activeFolder
-      ? `http://localhost:3000/${userId}/folder/${activeFolder}/createForm` // API for creating a form inside a folder
-      : `http://localhost:3000/${userId}/createForm`; // API for creating a form in the root
+      const response = await fetch(`http://localhost:3000/dashboard/${userId}`, {
+        credentials: 'include'
+      });
 
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ name: formName }),
-        });
-        if (response.ok) {
-          const newForm = await response.json();
-          setForm([...form, newForm]); // Update the form state
-          setIsFormModalOpen(false); // Close the modal
-        }
-        else {
-          const errorData = await response.json();
-          alert(errorData.message || 'Failed to create form');
-        }
+      if (response.ok) {
+        const data = await response.json();
+        setFolder(data.folders || []);
+        setForm(data.rootForms || []);
+        setUserName(data.userName);
       }
-      catch (error) {
-        console.error('Error creating form:', error);
-        alert('An error occurred while creating the form');
-      }
+    } catch (error) {
+      console.error('Error fetching user workspace:', error);
+    }
   };
+
+  // Fetch workspace-specific data
+  const fetchWorkspaceData = async (workspaceId) => {
+    if (!workspaceId) return;
     
-  const fetchFormsForFolder = async (folderId) => {
     try {
-        const response = await fetch(`http://localhost:3000/${userId}/folder/${folderId}/forms`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            credentials: 'include',
+        const response = await fetch(`http://localhost:3000/workspace/${workspaceId}/data`, {
+            credentials: 'include'
         });
 
         if (response.ok) {
-            const forms = await response.json();
-            setForm(forms); // Update forms for the active folder
-            setActiveFolder(folderId); // Set the active folder
-            console.log("Active FolderId : " + folderId)
-        } else {
-            console.error('Error fetching forms for folder');
+            const data = await response.json();
+            console.log('Received workspace data:', data);
+            
+            // Make sure we're setting both folders and forms
+            setFolder(data.folders || []);
+            setForm(data.forms || []);
+            
+            // Log the state updates
+            console.log('Updated state:', {
+                folders: data.folders?.length || 0,
+                forms: data.forms?.length || 0
+            });
+        } else if (response.status === 403) {
+            alert('You do not have access to this workspace');
+            setActiveWorkspace(null);
+            fetchUserWorkspace();
+        } else if (response.status === 404) {
+            alert('Workspace not found');
+            setActiveWorkspace(null);
         }
     } catch (error) {
-        console.error('Error fetching forms:', error);
+        console.error('Error fetching workspace data:', error);
+        alert('Failed to fetch workspace data');
+    }
+};
+  // Handle workspace change
+  const handleWorkspaceChange = (workspaceId) => {
+    if (!workspaceId || workspaceId === userId) {
+      setActiveWorkspace(null);
+      setCurrentAccessType('owner');
+      fetchUserWorkspace();
+      return;
+    }
+
+    const selectedWorkspace = sharedWorkspaces.find(ws => ws.ownerId === workspaceId);
+    if (selectedWorkspace) {
+      setActiveWorkspace(workspaceId);
+      setCurrentAccessType(selectedWorkspace.accessType);
+      fetchWorkspaceData(workspaceId);
     }
   };
 
-  useEffect(() => {
-    if (activeFolder) {
-        console.log("Active Folder (Updated): " + activeFolder);
-    }
-}, [activeFolder]);
-
-  useEffect(() => {
-    const fetchUserName = async () => {
-      try {
-        console.log(userId)
-        const response = await fetch(`http://localhost:3000/dashboard/${userId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUserName(data.userName); // Set the userName from the API response
-          setFolder(data.folders); // Set the folder from the API response
-          console.log(data.folders);
-          setForm(data.rootForms); // Set the form from the API response
-          console.log(data.rootForms);
-        } else if (response.status === 400 || response.status === 403) {
-          navigate('/login'); // Redirect to login on unauthorized access
-        } else {
-          console.error('Error fetching user name');
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchUserName();
-  }, [userId, navigate]);
-
-  // Deleting a form or folder
-  const handleDelete = async () => {
+  // Handle sharing workspace
+  const handleShare = async ({ email, accessType }) => {
     try {
-      const url = deleteItemType === 'folder'
-        ? `http://localhost:3000/${userId}/folder/${deleteItemId}`
-        : `http://localhost:3000/${userId}/form/${deleteItemId}`;
-
-      const response = await fetch(url, {
-        method: 'DELETE',
+      const response = await fetch(`http://localhost:3000/workspace/${userId}/share`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
+        body: JSON.stringify({ email, accessType }),
       });
 
-      if (response.ok) {
-        if (deleteItemType === 'folder') {
-          setFolder(folder.filter(f => f._id !== deleteItemId));
-        } else {
-          setForm(form.filter(f => f._id !== deleteItemId));
-        }
-        setIsDeleteModalOpen(false);
-      } else {
-        alert('Failed to delete item');
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message);
+        return;
       }
+
+      setIsShareModalOpen(false);
+      alert('Workspace shared successfully');
+      fetchSharedWorkspaces();
     } catch (error) {
-      console.error('Error deleting item:', error);
-      alert('An error occurred while deleting the item');
+      console.error('Error sharing workspace:', error);
+      alert('Failed to share workspace');
     }
   };
 
-  const openDeleteModal = (itemType, itemId) => {
-    setDeleteItemType(itemType);
-    setDeleteItemId(itemId);
-    setIsDeleteModalOpen(true);
-  };
+  const toggleLightMode = () => setLight(prevLight => !prevLight);
 
+  // Initial data fetch
+  useEffect(() => {
+    fetchUserWorkspace();
+    fetchSharedWorkspaces();
+  }, [userId]);
 
   return (
     <div className={light ? style.light : style.dark}>
-      <DashboardHeader toggleLightMode={toggleLightMode} light={light} name={userName || 'User'} />
+      <DashboardHeader
+        toggleLightMode={toggleLightMode}
+        light={light}
+        name={userName || 'User'}
+        onShare={() => currentAccessType === 'owner' && setIsShareModalOpen(true)}
+        sharedWorkspaces={sharedWorkspaces}
+        onWorkspaceChange={handleWorkspaceChange}
+        activeWorkspace={activeWorkspace}
+      />
       <DashboardDisplay
         form={form}
         folder={folder}
-        openFolderModal={() => setIsFolderModalOpen(true)}
-        openFormModal={() => setIsFormModalOpen(true)}
-        onFolderClick={fetchFormsForFolder}
-        activeFolder={activeFolder}
-        openDeleteModal={openDeleteModal}
+        readOnly={currentAccessType === 'view'}
       />
-      {/* Folder Modal */}
-      {isFolderModalOpen && (
+      {isShareModalOpen && (
         <Modal
-          title="Create New Folder"
-          onClose={() => setIsFolderModalOpen(false)}
-          onSave={createFolder}
+          title="Share Workspace"
+          onClose={() => setIsShareModalOpen(false)}
+          onSave={handleShare}
+          inputPlaceholder="Enter user email"
+          isShareModal={true}
+          userId={userId}
         />
       )}
-      {/* Form Modal */}
-      {isFormModalOpen && (
-        <Modal
-          title="Create New Form"
-          onClose={() => setIsFormModalOpen(false)}
-          onSave={createForm}
-        />
-      )}
-      {/* Delete Modal */}
-       {isDeleteModalOpen && (
-        <Modal
-          title={`Are you sure you want to delete this ${deleteItemType}?`}
-          onClose={() => setIsDeleteModalOpen(false)}
-          onSave={handleDelete}
-          deleteAction
-        />
-      )}
-
     </div>
   );
 };

@@ -3,21 +3,37 @@ import { useNavigate, useParams } from 'react-router';
 import FormFlow from './Flow/FormFlow';
 import FlowHeader from './FlowHeader/FlowHeader';
 import style from './Flow.module.css';
+import FormResponse from '../FormResponse/FormResponse';
 
 const Flow = ({ initialFormName = '', initialFormDescription = '' }) => {
   const [light, setLight] = useState(true);
   const [formName, setFormName] = useState(initialFormName);
   const [formDescription, setFormDescription] = useState(initialFormDescription);
+  const [unsavedChanges, setUnsavedChanges] = useState({
+    flow: null,
+    inputValues: null
+  });
+  const [activeTab, setActiveTab] = useState('flow'); // Track active tab
 
   const { userId, formId } = useParams();
   const navigate = useNavigate();
 
-  
   const toggleLightMode = () => setLight((prevLight) => !prevLight);
+
+  // Handle changes from FormFlow component
+  const handleFlowChange = (changes) => {
+    setUnsavedChanges(changes);
+  };
+
   // Save Form Handler
   const handleSaveForm = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/${userId}/form/${formId}/save`, {
+      const stepsToSave = unsavedChanges.flow.steps.map(({ _id, ...stepData }) => ({
+        ...stepData,
+        value: stepData.value || ''
+      }));
+
+      const formResponse = await fetch(`http://localhost:3000/${userId}/form/${formId}/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -25,20 +41,27 @@ const Flow = ({ initialFormName = '', initialFormDescription = '' }) => {
           name: formName,
           description: formDescription,
           isPublished: false,
+          flow: unsavedChanges.flow,
+          steps: stepsToSave
         }),
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Saved form:', result.form);
-        navigate(`/dashboard/${userId}`); // Redirect to dashboard after saving
-      } else {
-        const error = await response.json();
-        console.log('Failed to save the form: ' + error.message);
+      if (!formResponse.ok) {
+        throw new Error('Failed to save form details');
       }
+
+      const savedForm = await formResponse.json();
+      console.log('Form saved successfully:', savedForm); // Debug log
+
+      navigate(`/dashboard/${userId}`);
     } catch (error) {
       console.error('Error saving form:', error);
     }
+  };
+
+  // Switch between Flow and Response views
+  const handleTabSwitch = (tab) => {
+    setActiveTab(tab);
   };
 
   return (
@@ -48,15 +71,25 @@ const Flow = ({ initialFormName = '', initialFormDescription = '' }) => {
         light={light}
         formName={formName}
         setFormName={setFormName}
-        handleSaveForm={handleSaveForm}  // Pass the save handler
+        handleSaveForm={handleSaveForm}
+        onCancel={() => navigate(`/dashboard/${userId}`)}
+        handleTabSwitch={handleTabSwitch}
+        activeTab={activeTab}
       />
-      <FormFlow
-        light={light}
-        formName={formName}
-        setFormName={setFormName}
-        formDescription={formDescription}
-        setFormDescription={setFormDescription}
-      />
+      
+      {/* Conditional rendering for Flow or Response */}
+      {activeTab === 'flow' ? (
+        <FormFlow
+          light={light}
+          formName={formName}
+          setFormName={setFormName}
+          formDescription={formDescription}
+          setFormDescription={setFormDescription}
+          onFlowChange={handleFlowChange}
+        />
+      ) : (
+        <FormResponse formId={formId} userId={userId}/>
+      )}
     </div>
   );
 };

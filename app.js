@@ -8,6 +8,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import Dashboard from './src/components/Dashboard/Dashboard';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import Flow from './src/components/FormFlow/Flow';
+import ChatBot from './src/components/ChatBot/ChatBot';
+import FormResponse from './src/components/FormResponse/FormResponse';
+
 
 
 
@@ -37,7 +40,11 @@ const appRouter = createBrowserRouter([
             },
             {
                 path: "/dashboard/:userId/form/:formId/flow", // Add this new route
-                element: <Flow />
+                element: <Flow />,
+            },
+            {
+                path:"/form/:formId/chat",
+                element:<ChatBot />
             }
         ]
     },

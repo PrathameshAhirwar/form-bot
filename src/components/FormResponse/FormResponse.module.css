@@ -1,0 +1,98 @@
+.formResponseContainer {
+    padding: 2rem;
+    /* color: #fff; */
+    background-color: inherit;
+    height: 100vh;
+    overflow-y: scroll;
+  }
+  
+  .statsContainer {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .responseTableWrapper {
+    max-height: 50vh; /* Adjust height as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Optional border for better visibility */
+    margin-bottom: 3rem; /* Maintain spacing */
+  }
+  
+  .responseTable {
+    width: 100%;
+    border-collapse: collapse; /* Ensures clean table borders */
+  }
+  
+  
+  .statBox {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .statValue {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .statLabel {
+    margin: 0;
+    opacity: 0.8;
+  }
+  
+  .responseTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 3rem;
+    overflow-y: scroll;
+  }
+  
+  .responseTable th,
+  .responseTable td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .responseTable th {
+    opacity: 0.7;
+    font-weight: normal;
+  }
+  
+  .completionSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem; /* Reduced gap for tighter layout */
+  }
+  
+  .doughnutChart {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .completionRate,
+  .completionDetails {
+    text-align: center; /* Ensures text alignment consistency */
+  }
+  
+  .completionRateValue {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .completionRateLabel {
+    margin-top: 0.5rem;
+    opacity: 0.8;
+  }
+  
+  .completionDetails {
+    margin-bottom: 50px;
+  }
+  
+  
+  
