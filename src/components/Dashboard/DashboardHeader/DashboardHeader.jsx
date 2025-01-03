@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import style from './dashboardHeader.module.css';
+import * as style from './dashboardHeader.module.css';
 
 const DashboardHeader = ({
   toggleLightMode,

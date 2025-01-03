@@ -1,4 +1,4 @@
-import style from './display.module.css';
+import * as style from './display.module.css';
 import { Trash } from 'lucide-react';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';

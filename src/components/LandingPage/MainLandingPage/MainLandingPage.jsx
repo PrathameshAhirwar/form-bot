@@ -1,4 +1,4 @@
-import style from './main.module.css'
+import * as style from './main.module.css'
 import leftDesign from './assets/SVG.png'
 import rightDesign from './assets/Container (3).png'
 import backgroundLeft from './assets/Background+Blur.png'
@@ -10,7 +10,7 @@ const MainLandingPage = () => {
     <>
         <div className={style.container}>
             {/* left design */}
-            <div className={style.leftDesign}>
+            <div>
                 <img src={leftDesign} alt="" />
             </div>
             {/* center text */}
@@ -23,7 +23,7 @@ const MainLandingPage = () => {
                 <h4 className={style.btn}>Create a FormBot for free</h4>
             </div>
             {/* right design */}
-            <div className={style.rightDesign}>
+            <div>
                 <img src={rightDesign} alt="" />
             </div>
 

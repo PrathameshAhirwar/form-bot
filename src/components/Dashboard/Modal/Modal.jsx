@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import style from './Modal.module.css';
+import * as style from './Modal.module.css';
 
 const Modal = ({ title, onClose, onSave, deleteAction, inputPlaceholder, isShareModal,userId }) => {
   const [inputValue, setInputValue] = useState('');

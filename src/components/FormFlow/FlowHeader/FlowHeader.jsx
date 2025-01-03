@@ -1,5 +1,5 @@
 import React from 'react';
-import style from './FlowHeader.module.css';
+import * as style from './FlowHeader.module.css';
 import { XIcon } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
 

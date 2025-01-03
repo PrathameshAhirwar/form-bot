@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import style from './FormResponse.module.css';
+import * as style from './FormResponse.module.css';
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
@@ -87,11 +87,11 @@ const FormResponse = ({ formId }) => {
   };
 
   if (loading) {
-    return <div className={style.loading}>Loading...</div>;
+    return <div>Loading...</div>;
   }
 
   if (error) {
-    return <div className={style.error}>Error: {error}</div>;
+    return <div>Error: {error}</div>;
   }
 
   return (
@@ -132,7 +132,7 @@ const FormResponse = ({ formId }) => {
             ))
           ) : (
             <tr>
-              <td colSpan={columns.length + 1} className={style.noData}>
+              <td colSpan={columns.length + 1}>
                 No responses yet
               </td>
             </tr>

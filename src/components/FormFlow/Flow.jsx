@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import FormFlow from './Flow/FormFlow';
 import FlowHeader from './FlowHeader/FlowHeader';
-import style from './Flow.module.css';
+import * as style from './Flow.module.css';
 import FormResponse from '../FormResponse/FormResponse';
 
 const Flow = ({ initialFormName = '', initialFormDescription = '' }) => {

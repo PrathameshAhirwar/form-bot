@@ -1,4 +1,4 @@
-import style from './header.module.css'
+import * as style from './header.module.css'
 import Logo from './Logo.png'
 import { NavLink } from 'react-router'
 

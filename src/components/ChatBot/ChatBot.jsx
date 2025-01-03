@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
-import style from './ChatBot.module.css';
+import * as style from './ChatBot.module.css';
 
 const ChatBot = () => {
   const { formId } = useParams();

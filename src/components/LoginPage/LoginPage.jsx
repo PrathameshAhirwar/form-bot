@@ -1,4 +1,4 @@
-import style from './login.module.css';
+import * as style from './login.module.css';
 import google from './Google Icon.png';
 import leftDesign from './Group 2.png';
 import bottomDesign from './Ellipse 1.png';

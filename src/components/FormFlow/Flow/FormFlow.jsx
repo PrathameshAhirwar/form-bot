@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
-import style from './FormFlow.module.css';
+import * as style from './FormFlow.module.css';
 
 const FormFlow = ({ light, onFlowChange }) => {
   const { userId, formId } = useParams();
@@ -202,7 +202,7 @@ const FormFlow = ({ light, onFlowChange }) => {
             
             {/* Display-only elements for input types */}
             {!BUBBLE_TYPES.includes(step.type) && step.type !== 'button' && (
-              <div className={style.inputDisplay}>{step.type} Input Field</div>
+              <div >{step.type} Input Field</div>
             )}
             
             {/* Button for button type */}
@@ -218,7 +218,7 @@ const FormFlow = ({ light, onFlowChange }) => {
           </div>
         ))}
 
-        {formSubmitted && <div className={style.submitMessage}>Form submitted successfully!</div>}
+        {formSubmitted && <div>Form submitted successfully!</div>}
       </div>
     </div>
   );

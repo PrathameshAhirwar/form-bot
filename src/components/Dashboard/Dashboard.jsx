@@ -1,7 +1,7 @@
 // Dashboard.jsx
 import React, { useState, useEffect } from 'react';
 import DashboardHeader from './DashboardHeader/DashboardHeader';
-import style from './Dashboard.module.css';
+import * as style from './Dashboard.module.css';
 import { useParams, useNavigate } from 'react-router';
 import DashboardDisplay from './folder and form/DashboardDisplay';
 import Modal from './Modal/Modal';
