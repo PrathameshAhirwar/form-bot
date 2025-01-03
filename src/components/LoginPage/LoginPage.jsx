@@ -12,7 +12,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate()
-
+  const apiUrl =  process.env.REACT_APP_API_URL;
   useEffect(() => {
     const token = document.cookie
         .split(';')
@@ -42,7 +42,7 @@ const LoginPage = () => {
     
 
     try {
-      const response = await fetch('http://localhost:3000/login', {
+      const response = await fetch(`${apiUrl}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

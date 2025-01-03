@@ -14,7 +14,7 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const apiUrl =  process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -26,7 +26,7 @@ const Signup = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/signup', {
+      const response = await fetch(`${apiUrl}/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

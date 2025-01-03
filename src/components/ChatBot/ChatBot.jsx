@@ -11,12 +11,12 @@ const ChatBot = () => {
   const [formCompleted, setFormCompleted] = useState(false); // Track form completion
   const [responses, setResponses] = useState({}); // Store responses
   const [hasStarted, setHasStarted] = useState(false);
-
+  const apiUrl =  process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchFlow = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/form/${formId}/flow`, { credentials: 'include' });
+        const response = await fetch(`${apiUrl}/form/${formId}/flow`, { credentials: 'include' });
         if (response.ok) {
           const flowData = await response.json();
           setFlowSteps(flowData.steps);
@@ -47,7 +47,7 @@ const ChatBot = () => {
     };
     const incrementViews = async () => {
       try {
-        await fetch(`http://localhost:3000/form/${formId}/view`, {
+        await fetch(`${apiUrl}/form/${formId}/view`, {
           method: 'POST',
           credentials: 'include'
         });
@@ -67,7 +67,7 @@ const ChatBot = () => {
     if (!hasStarted) {
       setHasStarted(true);
       try {
-        await fetch(`http://localhost:3000/form/${formId}/response`, {
+        await fetch(`${apiUrl}/form/${formId}/response`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -123,7 +123,7 @@ const ChatBot = () => {
         isComplete: true // Add this flag
       };
   
-      const response = await fetch(`http://localhost:3000/form/${formId}/response`, {
+      const response = await fetch(`${apiUrl}/form/${formId}/response`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

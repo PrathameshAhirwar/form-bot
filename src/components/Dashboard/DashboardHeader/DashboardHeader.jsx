@@ -12,10 +12,10 @@ const DashboardHeader = ({
   activeWorkspace 
 }) => {
   const navigate = useNavigate();
-
+  const apiUrl =  process.env.REACT_APP_API_URL;
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:3000/logout', {
+      const response = await fetch(`${apiUrl}/logout`, {
         method: 'POST',
         credentials: 'include',
       });

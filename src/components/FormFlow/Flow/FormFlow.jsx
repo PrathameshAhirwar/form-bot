@@ -8,7 +8,7 @@ const FormFlow = ({ light, onFlowChange }) => {
   const [selectedStep, setSelectedStep] = useState(null);
   const [localInputValues, setLocalInputValues] = useState({});
   const [formSubmitted, setFormSubmitted] = useState(false);
-
+  const apiUrl =  process.env.REACT_APP_API_URL;
   // Define which types should have input fields (only bubble items)
   const BUBBLE_TYPES = ['text', 'image', 'video', 'gif'];
 
@@ -16,7 +16,7 @@ const FormFlow = ({ light, onFlowChange }) => {
   useEffect(() => {
     const fetchFlow = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/${userId}/form/${formId}/flow`, {
+        const response = await fetch(`${apiUrl}/${userId}/form/${formId}/flow`, {
           credentials: 'include',
         });
         if (response.ok) {

@@ -16,12 +16,12 @@ const FormResponse = ({ formId }) => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const apiUrl =  process.env.REACT_APP_API_URL;
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:3000/form/${formId}/responses`, {
+        const response = await fetch(`${apiUrl}/form/${formId}/responses`, {
           credentials: 'include'
         });
         

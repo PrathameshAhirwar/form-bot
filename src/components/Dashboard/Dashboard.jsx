@@ -18,11 +18,11 @@ const Dashboard = () => {
   const [activeWorkspace, setActiveWorkspace] = useState(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [currentAccessType, setCurrentAccessType] = useState('owner');
-
+  const apiUrl =  process.env.REACT_APP_API_URL;
   // Fetch shared workspaces
   const fetchSharedWorkspaces = async () => {
     try {
-      const response = await fetch('http://localhost:3000/workspace/shared', {
+      const response = await fetch(`${apiUrl}/workspace/shared`, {
         credentials: 'include',
       });
       
@@ -39,7 +39,7 @@ const Dashboard = () => {
   // Fetch user's own workspace data
   const fetchUserWorkspace = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/dashboard/${userId}`, {
+      const response = await fetch(`${apiUrl}/dashboard/${userId}`, {
         credentials: 'include'
       });
 
@@ -59,7 +59,7 @@ const Dashboard = () => {
     if (!workspaceId) return;
     
     try {
-        const response = await fetch(`http://localhost:3000/workspace/${workspaceId}/data`, {
+        const response = await fetch(`${apiUrl}/workspace/${workspaceId}/data`, {
             credentials: 'include'
         });
 
@@ -109,7 +109,7 @@ const Dashboard = () => {
   // Handle sharing workspace
   const handleShare = async ({ email, accessType }) => {
     try {
-      const response = await fetch(`http://localhost:3000/workspace/${userId}/share`, {
+      const response = await fetch(`${apiUrl}/workspace/${userId}/share`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

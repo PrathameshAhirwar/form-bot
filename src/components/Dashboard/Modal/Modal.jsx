@@ -6,11 +6,11 @@ const Modal = ({ title, onClose, onSave, deleteAction, inputPlaceholder, isShare
   const [accessType, setAccessType] = useState('view');
   const [shareLink, setShareLink] = useState('');
   const [error, setError] = useState('');
-
+  const apiUrl =  process.env.REACT_APP_API_URL;
   const handleSave = async () => {
     if (isShareModal) {
       try {
-        const response = await fetch(`http://localhost:3000/workspace/${userId}/share`, {
+        const response = await fetch(`${apiUrl}/workspace/${userId}/share`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ const Modal = ({ title, onClose, onSave, deleteAction, inputPlaceholder, isShare
 
   const generateShareLink = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/workspace/shareLink`, {
+      const response = await fetch(`${apiUrl}/workspace/shareLink`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -17,7 +17,7 @@ const Flow = ({ initialFormName = '', initialFormDescription = '' }) => {
 
   const { userId, formId } = useParams();
   const navigate = useNavigate();
-
+  const apiUrl =  process.env.REACT_APP_API_URL;
   const toggleLightMode = () => setLight((prevLight) => !prevLight);
 
   // Handle changes from FormFlow component
@@ -33,7 +33,7 @@ const Flow = ({ initialFormName = '', initialFormDescription = '' }) => {
         value: stepData.value || ''
       }));
 
-      const formResponse = await fetch(`http://localhost:3000/${userId}/form/${formId}/save`, {
+      const formResponse = await fetch(`${apiUrl}/${userId}/form/${formId}/save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

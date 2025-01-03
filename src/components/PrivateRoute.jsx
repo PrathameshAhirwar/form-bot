@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react';
 
 const PrivateRoute = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(null);
-
+    const apiUrl =  process.env.REACT_APP_API_URL;
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                const response = await fetch('http://localhost:3000/verify-token', {
+                const response = await fetch(`${apiUrl}/verify-token`, {
                     method: 'GET',
                     credentials: 'include', // Include cookies in the request
                 });
