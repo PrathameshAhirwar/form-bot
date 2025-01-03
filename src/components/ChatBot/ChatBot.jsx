@@ -5,11 +5,11 @@ import * as style from './ChatBot.module.css';
 const ChatBot = () => {
   const { formId } = useParams();
   const [flowSteps, setFlowSteps] = useState([]);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0); // Start from the first step
+  const [currentStepIndex, setCurrentStepIndex] = useState(0); 
   const [chatHistory, setChatHistory] = useState([]);
   const [inputValue, setInputValue] = useState('');
-  const [formCompleted, setFormCompleted] = useState(false); // Track form completion
-  const [responses, setResponses] = useState({}); // Store responses
+  const [formCompleted, setFormCompleted] = useState(false); 
+  const [responses, setResponses] = useState({}); 
   const [hasStarted, setHasStarted] = useState(false);
   const apiUrl =  process.env.REACT_APP_API_URL;
 
@@ -73,7 +73,7 @@ const ChatBot = () => {
           credentials: 'include',
           body: JSON.stringify({
             isStart: true,
-            responses: [] // Empty responses array for initial start
+            responses: []
           }),
         });
       } catch (error) {
@@ -120,7 +120,7 @@ const ChatBot = () => {
   
       const formData = {
         responses: formattedResponses,
-        isComplete: true // Add this flag
+        isComplete: true 
       };
   
       const response = await fetch(`${apiUrl}/form/${formId}/response`, {

@@ -28,7 +28,6 @@ const Dashboard = () => {
       
       if (response.ok) {
         const data = await response.json();
-        console.log('Shared workspaces:', data); // Debug log
         setSharedWorkspaces(data);
       }
     } catch (error) {
@@ -59,7 +58,7 @@ const Dashboard = () => {
     if (!workspaceId) return;
     
     try {
-        const response = await fetch(`${apiUrl}/workspace/${workspaceId}/data`, {
+        const response = await fetch(`https://form-bot-backend-my66.onrender.com/workspace/${workspaceId}/data`, {
             credentials: 'include'
         });
 
