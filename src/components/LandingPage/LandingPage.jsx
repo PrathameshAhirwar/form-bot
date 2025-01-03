@@ -1,5 +1,5 @@
 import { HeaderLandingPage } from './HeaderLandingPage/HeaderLandingPage';
-import style from './LandingPage.module.css';
+import style from './landingpage.module.css';
 import MainLandingPage from './MainLandingPage/MainLandingPage';
 import FooterLandingPage from './FooterLandingPage/FooterLandingPage';
 
